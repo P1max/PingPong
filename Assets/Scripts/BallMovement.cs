@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEditor.SearchService;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 
@@ -57,14 +58,13 @@ public class BallMovement :  MonoBehaviour
     void Update()
     {
         BallRb.velocity = direction.normalized * Speed;
-        if (Ball.transform.position.x > RightBaseLine.position.x)
+        if (transform.position.x > RightBaseLine.position.x)
         {
-            score.ScoreLogic(false, Ball);
-
+            score.ScoreLogic(false);
         }
-        if (Ball.transform.position.x < LeftBaseLine.position.x)
+        if (transform.position.x < LeftBaseLine.position.x)
         {
-            score.ScoreLogic(true, Ball);
+            score.ScoreLogic(true);
         }
     }
 

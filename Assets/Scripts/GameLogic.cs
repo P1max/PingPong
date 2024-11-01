@@ -18,7 +18,7 @@ public class GameLogic : MonoBehaviour
     [SerializeField] private int scoreToWin = 10;
     [SerializeField] private int TimeTillTheEnd = 120;
 
-    public static List<GameObject> BallList;
+    public static List<GameObject> BallList = new();
 
     private int leftscore = 0;
     private int rightscore = 0;
@@ -27,12 +27,11 @@ public class GameLogic : MonoBehaviour
     {
         Time.timeScale = 1.0f;
         StartCoroutine(Timer(TimeTillTheEnd));
-        BallList = new List<GameObject>();
         StartCoroutine(WaitBallSpawn());    
 
 
     }
-    public void ScoreLogic(bool leftSide, GameObject ball)
+    public void ScoreLogic(bool leftSide)
     {
         if (leftSide)
         {
@@ -54,12 +53,12 @@ public class GameLogic : MonoBehaviour
             Time.timeScale = 0f;
         }
 
-        StartCoroutine(DeleteBall(ball));
-        if (BallList.Count == 0)
+        foreach (GameObject obj in BallList)
         {
-            StartCoroutine(WaitBallSpawn());
+            StartCoroutine(DeleteBall(obj));
         }
-
+        BallList.Clear();
+        StartCoroutine(WaitBallSpawn());
     }
 
     public IEnumerator WaitBallSpawn()
@@ -94,8 +93,9 @@ public class GameLogic : MonoBehaviour
 
     private IEnumerator DeleteBall(GameObject ball)
     {
-        BallList.Remove(ball);
+
         BallMovement move = ball.GetComponent<BallMovement>();
+
         move.Speed = 0;
         ball.transform.position = new Vector2(0, 50);
 
