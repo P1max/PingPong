@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6050567053290131504}
   - component: {fileID: 2657452925342470412}
   m_Layer: 0
-  m_Name: BallCl_Bonus
+  m_Name: BallCloneBonus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
