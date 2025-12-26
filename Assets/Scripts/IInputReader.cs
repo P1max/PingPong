@@ -1,4 +1,7 @@
-﻿public interface IInputReader
+﻿namespace Scripts
 {
-  float GetVerticalInput();
+    public interface IInputReader
+    {
+        float GetVerticalInput();
+    }
 }

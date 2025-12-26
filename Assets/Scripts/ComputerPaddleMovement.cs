@@ -1,7 +1,8 @@
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
-public class ComputerPaddleMovement : MonoBehaviour
+namespace Scripts
 {
-    
-} 
+    public class ComputerPaddleMovement : MonoBehaviour
+    {
+    }
+}

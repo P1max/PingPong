@@ -1,11 +1,13 @@
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ButtonInteract : MonoBehaviour
+namespace Scripts
 {
-    public void Mouseclick()
+    public class ButtonInteract : MonoBehaviour
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        public void Mouseclick()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 }

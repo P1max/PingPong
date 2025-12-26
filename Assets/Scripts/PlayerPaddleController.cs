@@ -1,41 +1,42 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerPaddleController : MonoBehaviour
+namespace Scripts
 {
-    [SerializeField] private float moveSpeed = 7f;
-
-    private InputReader _inputReader;
-    private Coroutine _inversionCoroutine;
-    
-    private Rigidbody2D _paddleRigidbody;
-    private float _verticalInput;
-
-    private void Awake()
+    public class PlayerPaddleController : MonoBehaviour
     {
-        _inputReader = new InputReader();
-        _paddleRigidbody = GetComponent<Rigidbody2D>();
-    }
+        [SerializeField] private float _moveSpeed = 7f;
 
-    private void Update()
-    {
-        _verticalInput = _inputReader.GetVerticalInput(); 
-        _paddleRigidbody.velocity = new Vector2(0, _verticalInput * moveSpeed);
+        private InputReader _inputReader;
+        private Coroutine _inversionCoroutine;
 
-    }
+        private Rigidbody2D _paddleRigidbody;
+        private float _verticalInput;
 
-    public void ApplyInversion(float duration)
-    {
-        if (_inversionCoroutine != null) StopCoroutine(_inversionCoroutine);
-        _inversionCoroutine = StartCoroutine(InvertTemporarily(duration));
-    }
+        private void Awake()
+        {
+            _inputReader = new InputReader();
+            _paddleRigidbody = GetComponent<Rigidbody2D>();
+        }
 
-    private IEnumerator InvertTemporarily(float duration)
-    {
-        _inputReader.IsInverted = true;
-        yield return new WaitForSeconds(duration);
-        _inputReader.IsInverted = false;
-        _inversionCoroutine = null;
+        private void Update()
+        {
+            _verticalInput = _inputReader.GetVerticalInput();
+            _paddleRigidbody.linearVelocity = new Vector2(0, _verticalInput * _moveSpeed);
+        }
+
+        public void ApplyInversion(float duration)
+        {
+            if (_inversionCoroutine != null) StopCoroutine(_inversionCoroutine);
+            _inversionCoroutine = StartCoroutine(InvertTemporarily(duration));
+        }
+
+        private IEnumerator InvertTemporarily(float duration)
+        {
+            _inputReader.IsInverted = true;
+            yield return new WaitForSeconds(duration);
+            _inputReader.IsInverted = false;
+            _inversionCoroutine = null;
+        }
     }
-    
 }

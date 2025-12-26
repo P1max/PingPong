@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class BonusSpawn : MonoBehaviour
 {
-
-    [SerializeField] private List<GameObject> Bonuses = new();  
+    [SerializeField] private List<GameObject> Bonuses = new();
     [SerializeField] private float TimeForBonusSpawn = 20f;
 
-    [Header("RangeForBonusSpawn")]
-    [SerializeField] private Transform RT;
-    [SerializeField] private Transform LB;
-
+    [Header("RangeForBonusSpawn")] 
+    [SerializeField] private Transform _rt;
+    [SerializeField] private Transform _lb;
 
     int count;
 
@@ -20,18 +18,18 @@ public class BonusSpawn : MonoBehaviour
         count = Bonuses.Count;
         StartCoroutine(BonusInstantiate());
     }
+
     IEnumerator BonusInstantiate()
     {
         while (true)
         {
             yield return new WaitForSeconds(TimeForBonusSpawn);
             var rand = Random.Range(0, count);
-            GameObject NewBonus = Instantiate(Bonuses[rand]);
-            NewBonus.transform.position = new Vector2(
-                Random.Range(LB.transform.position.x, RT.transform.position.x),
-                Random.Range(LB.transform.position.y, RT.transform.position.y));
-            NewBonus.SetActive(true);
+            var newBonus = Instantiate(Bonuses[rand]);
+            newBonus.transform.position = new Vector2(
+                Random.Range(_lb.transform.position.x, _rt.transform.position.x),
+                Random.Range(_lb.transform.position.y, _rt.transform.position.y));
+            newBonus.SetActive(true);
         }
     }
 }
-

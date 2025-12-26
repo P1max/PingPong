@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 
-public class InputReader : IInputReader
+namespace Scripts
 {
-    public bool IsInverted { get; set; } = false;
-    public float GetVerticalInput()
+    public class InputReader : IInputReader
     {
-        float input = Input.GetAxis("Vertical");
-        return IsInverted ? -input : input;
+        public bool IsInverted { get; set; } = false;
+
+        public float GetVerticalInput()
+        {
+            float input = Input.GetAxis("Vertical");
+            return IsInverted ? -input : input;
+        }
     }
 }

@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
-public class GameLogic : MonoBehaviour
+namespace Scripts
 {
-    
+    public class GameLogic : MonoBehaviour
+    {
+    }
 }

@@ -1,77 +1,79 @@
 #define test
-
-
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class BallMovement : MonoBehaviour
+namespace Scripts
 {
-   [SerializeField] private float moveSpeed = 5f;
-   [SerializeField] private Vector3 direction = Vector3.zero;
-   private Rigidbody2D _ballRigidbody;
-   
-   private void Awake()
+   public class BallMovement : MonoBehaviour
    {
-      _ballRigidbody = GetComponent<Rigidbody2D>();
-   }
+      [SerializeField] private float moveSpeed = 5f;
+      [SerializeField] private Vector3 direction = Vector3.zero;
+      private Rigidbody2D _ballRigidbody;
 
-   private void Start()
-   {
-      Launch();
-   }
+      private void Awake()
+      {
+         _ballRigidbody = GetComponent<Rigidbody2D>();
+      }
 
-   private void Update()
-   {
-      _ballRigidbody.velocity = direction.normalized * moveSpeed;
-   }
+      private void Start()
+      {
+         Launch();
+      }
 
-   private void Launch()
-   {
+      private void Update()
+      {
+         _ballRigidbody.linearVelocity = direction.normalized * moveSpeed;
+      }
+
+      private void Launch()
+      {
 #if test
-      direction = new Vector3(1f, Random.Range(-0.5f, 0.5f));
+         direction = new Vector3(1f, Random.Range(-0.5f, 0.5f));
 #endif
 #if !test
       direction = new Vector3(Random.value < 0.5f ? -1f : 1f, Random.Range(-0.5f, 0.5f));
 #endif
-      _ballRigidbody.velocity = direction * moveSpeed;
-   }
-
-   private void OnCollisionEnter2D(Collision2D other)
-   {
-      
-      if (other.gameObject.TryGetComponent<PlayerPaddleController>(out _) || other.gameObject.TryGetComponent<ComputerPaddleMovement>(out _))
-      {
-         HandlePaddleCollision(other);
+         _ballRigidbody.linearVelocity = direction * moveSpeed;
       }
-      else if (other.gameObject.TryGetComponent<Wall>(out _))
+
+      private void OnCollisionEnter2D(Collision2D other)
       {
-         direction.y = -direction.y;
+
+         if (other.gameObject.TryGetComponent<PlayerPaddleController>(out _) ||
+             other.gameObject.TryGetComponent<ComputerPaddleMovement>(out _))
+         {
+            HandlePaddleCollision(other);
+         }
+         else if (other.gameObject.layer == LayerMask.NameToLayer("Wall"))
+         {
+            direction.y = -direction.y;
+         }
       }
-   }
-   
-   private void HandlePaddleCollision(Collision2D collision)
-   {
-      GameObject paddle = collision.gameObject;
-      ContactPoint2D contact = collision.GetContact(0);
-      
-      bool isFrontHit = Mathf.Abs(contact.normal.x) > Mathf.Abs(contact.normal.y);
 
-      if (isFrontHit)
+      private void HandlePaddleCollision(Collision2D collision)
       {
-         float paddleY = paddle.transform.position.y;
-         float paddleHeight = paddle.GetComponent<Collider2D>().bounds.size.y;
+         GameObject paddle = collision.gameObject;
+         ContactPoint2D contact = collision.GetContact(0);
 
-         float ballY = transform.position.y;
+         bool isFrontHit = Mathf.Abs(contact.normal.x) > Mathf.Abs(contact.normal.y);
 
-         float yOffset = (ballY - paddleY) / (paddleHeight / 2f);
-         yOffset = Mathf.Clamp(yOffset, -1f, 1f);
+         if (isFrontHit)
+         {
+            float paddleY = paddle.transform.position.y;
+            float paddleHeight = paddle.GetComponent<Collider2D>().bounds.size.y;
 
-         float bounceStrength = 1f;
-         direction = new Vector2(-direction.x, yOffset * bounceStrength).normalized;
-      }
-      else
-      {
-         direction.y = -direction.y;
+            float ballY = transform.position.y;
+
+            float yOffset = (ballY - paddleY) / (paddleHeight / 2f);
+            yOffset = Mathf.Clamp(yOffset, -1f, 1f);
+
+            float bounceStrength = 1f;
+            direction = new Vector2(-direction.x, yOffset * bounceStrength).normalized;
+         }
+         else
+         {
+            direction.y = -direction.y;
+         }
       }
    }
 }
