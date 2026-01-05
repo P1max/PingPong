@@ -2,20 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BonusSpawn : MonoBehaviour
+public class BonusSpawner : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> Bonuses = new();
-    [SerializeField] private float TimeForBonusSpawn = 20f;
+    [SerializeField] private List<GameObject> _bonuses = new();
+    [SerializeField] private float _timeForBonusSpawn = 20f;
 
     [Header("RangeForBonusSpawn")] 
     [SerializeField] private Transform _rt;
     [SerializeField] private Transform _lb;
 
-    int count;
+    private int _count;
 
     void Start()
     {
-        count = Bonuses.Count;
+        _count = _bonuses.Count;
         StartCoroutine(BonusInstantiate());
     }
 
@@ -23,9 +23,9 @@ public class BonusSpawn : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(TimeForBonusSpawn);
-            var rand = Random.Range(0, count);
-            var newBonus = Instantiate(Bonuses[rand]);
+            yield return new WaitForSeconds(_timeForBonusSpawn);
+            var rand = Random.Range(0, _count);
+            var newBonus = Instantiate(_bonuses[rand]);
             newBonus.transform.position = new Vector2(
                 Random.Range(_lb.transform.position.x, _rt.transform.position.x),
                 Random.Range(_lb.transform.position.y, _rt.transform.position.y));
