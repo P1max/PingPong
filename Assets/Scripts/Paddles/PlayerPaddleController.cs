@@ -21,8 +21,8 @@ namespace Scripts
 
         private void Update()
         {
-            _verticalInput = _inputReader.GetVerticalInput();
-            _paddleRigidbody.linearVelocity = new Vector2(0, _verticalInput * _moveSpeed);
+            // _verticalInput = _inputReader.GetVerticalInput();
+            // _paddleRigidbody.linearVelocity = new Vector2(0, _verticalInput * _moveSpeed);
         }
 
         public void ApplyInversion(float duration)

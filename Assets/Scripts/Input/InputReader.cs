@@ -9,6 +9,7 @@ namespace Scripts
         public float GetVerticalInput()
         {
             float input = Input.GetAxis("Vertical");
+                
             return IsInverted ? -input : input;
         }
     }
