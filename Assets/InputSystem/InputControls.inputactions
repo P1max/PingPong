@@ -1,0 +1,77 @@
+{
+    "version": 1,
+    "name": "InputControls",
+    "maps": [
+        {
+            "name": "Default",
+            "id": "a59f0e17-a476-46ed-9425-e6b435658c6f",
+            "actions": [
+                {
+                    "name": "Up",
+                    "type": "Button",
+                    "id": "26b29cf6-6a73-4af8-8ab5-1422d2ef9012",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Down",
+                    "type": "Button",
+                    "id": "d3af9703-db8a-4a78-8eb4-a60524284967",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "bd7c7daf-8c52-4e77-af31-b6bc9bc82964",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Down",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "46672dca-fb93-4490-a4a8-a89628406aa1",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Down",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "17415292-ddc3-4dca-b4b8-c54ea5eefb97",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Up",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b234ce4a-2648-4f95-a378-36a2d3f773f7",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Up",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

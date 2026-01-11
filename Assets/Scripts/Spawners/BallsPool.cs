@@ -1,16 +1,19 @@
 ﻿using System.Collections.Generic;
+using Paddles;
 using UnityEngine;
 
 namespace Scripts
 {
     public class BallsPool
     {
+        private readonly BallCollisionsHandler _ballCollisionsHandler;
         private readonly LinkedList<Ball> _activeBalls;
         private readonly LinkedList<Ball> _freeBalls;
         private readonly Ball _ballPrefab;
 
-        public BallsPool()
+        public BallsPool(BallCollisionsHandler ballCollisionsHandler)
         {
+            _ballCollisionsHandler = ballCollisionsHandler;
             _ballPrefab = Resources.Load<Ball>("Prefabs/Ball");
             
             _activeBalls = new LinkedList<Ball>();
@@ -54,6 +57,8 @@ namespace Scripts
         {
             var ball = Object.Instantiate(_ballPrefab);
 
+            ball.SetDependencies(_ballCollisionsHandler);
+            
             return ball;
         }
     }

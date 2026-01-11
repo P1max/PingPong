@@ -1,42 +1,47 @@
-using System.Collections;
+using InputSystem;
 using UnityEngine;
 
 namespace Scripts
 {
-    public class PlayerPaddleController : MonoBehaviour
+    public class PlayerPaddleController
     {
-        [SerializeField] private float _moveSpeed = 7f;
+        private readonly IInputReader _inputReader;
+        private readonly PlayerPaddle _playerPaddle;
 
-        private InputReader _inputReader;
-        private Coroutine _inversionCoroutine;
+        private int _isInverted;
 
-        private Rigidbody2D _paddleRigidbody;
-        private float _verticalInput;
-
-        private void Awake()
+        public PlayerPaddleController(IInputReader inputReader, PlayerPaddle playerPaddle)
         {
-            _inputReader = new InputReader();
-            _paddleRigidbody = GetComponent<Rigidbody2D>();
+            _inputReader = inputReader;
+            _playerPaddle = playerPaddle;
+            _isInverted = 1;
+            
+            _inputReader.OnUpAction += OnUp;
+            _inputReader.OnDownAction += OnDown;
+            _inputReader.OnReleaseAction += OnRelease;
+            
+            Debug.Log("PlayerPaddleController initialized");
         }
 
-        private void Update()
+        private void OnUp()
         {
-            // _verticalInput = _inputReader.GetVerticalInput();
-            // _paddleRigidbody.linearVelocity = new Vector2(0, _verticalInput * _moveSpeed);
+            Debug.Log($"Paddle Controller Up");
+            
+            _playerPaddle.Move(1 * _isInverted);
         }
 
-        public void ApplyInversion(float duration)
+        private void OnDown()
         {
-            if (_inversionCoroutine != null) StopCoroutine(_inversionCoroutine);
-            _inversionCoroutine = StartCoroutine(InvertTemporarily(duration));
+            Debug.Log($"Paddle Controller Down");
+            
+            _playerPaddle.Move(-1 * _isInverted);
         }
 
-        private IEnumerator InvertTemporarily(float duration)
+        private void OnRelease()
         {
-            _inputReader.IsInverted = true;
-            yield return new WaitForSeconds(duration);
-            _inputReader.IsInverted = false;
-            _inversionCoroutine = null;
+            Debug.Log($"Paddle Controller Release");
+            
+            _playerPaddle.Move(0);
         }
     }
 }

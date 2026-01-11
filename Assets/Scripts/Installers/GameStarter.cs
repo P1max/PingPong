@@ -8,7 +8,8 @@ namespace Scripts
     {
         private const float _DEFAULT_SPEED = 5f;
         
-        private BallsPool _ballsPool;
+        private readonly BallsPool _ballsPool;
+        
         private BonusSpawner _bonusSpawner;
         
         public GameStarter(BallsPool ballsPool)
@@ -19,7 +20,7 @@ namespace Scripts
 
         public async Task StartGameAsync()
         {
-            await Task.Delay(1000);
+            await Task.Delay(500);
 
             var newBall = _ballsPool.GetBall();
 
@@ -27,7 +28,8 @@ namespace Scripts
 
             await Task.Delay(1500);
             
-            newBall.SetDirection(new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f))).SetSpeed(_DEFAULT_SPEED);
+            newBall.SetDirection(new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)));
+            newBall.SetMoveSpeed(_DEFAULT_SPEED);
         }
     }
 }
