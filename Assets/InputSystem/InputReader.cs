@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace InputSystem
@@ -17,10 +16,9 @@ namespace InputSystem
         public InputReader()
         {
             _input = new InputControls();
+
             _input.Default.SetCallbacks(this);
             _input.Default.Enable();
-
-            Debug.Log("InputReader initialized");
         }
 
         public void OnUp(InputAction.CallbackContext context)
@@ -53,7 +51,7 @@ namespace InputSystem
             _input.Dispose();
         }
 
-#region enum
+        #region enum
 
         private enum Buttons
         {
@@ -61,6 +59,6 @@ namespace InputSystem
             Down = 1,
         }
 
-#endregion
+        #endregion
     }
 }

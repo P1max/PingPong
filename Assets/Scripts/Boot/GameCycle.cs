@@ -1,12 +1,15 @@
 ﻿using System;
+using Installers;
+using Spawners;
 using UnityEngine;
 using Zenject;
 
-namespace Scripts.Boot
+namespace Boot
 {
-    public class GameStarterRunner : MonoBehaviour
+    public class GameCycle : MonoBehaviour
     {
         [Inject] private GameStarter _gameStarter;
+        [Inject] private BonusSpawner _bonusSpawner;
 
         private async void Start()   // тут async void ок
         {
@@ -18,6 +21,11 @@ namespace Scripts.Boot
             {
                 Debug.LogException(e);
             }
+        }
+
+        private void Update()
+        {
+            _bonusSpawner.Tick(Time.deltaTime);
         }
     }
 }

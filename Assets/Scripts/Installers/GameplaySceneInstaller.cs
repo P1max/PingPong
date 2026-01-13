@@ -1,9 +1,11 @@
+using Ball;
+using Boot;
 using InputSystem;
 using Paddles;
-using Scripts.Boot;
+using Spawners;
 using Zenject;
 
-namespace Scripts
+namespace Installers
 {
     public class GameplaySceneInstaller : MonoInstaller
     {
@@ -12,11 +14,12 @@ namespace Scripts
             //Container.Bind<BonusSpawner>().AsSingle().NonLazy();
             Container.Bind<GameStarter>().AsSingle().NonLazy();
             Container.Bind<BallsPool>().AsSingle().NonLazy();
+            Container.Bind<BonusSpawner>().AsSingle().NonLazy();
             Container.Bind<PlayerPaddleController>().AsSingle().NonLazy();
             Container.Bind<IInputReader>().To<InputReader>().AsSingle().NonLazy();
             Container.Bind<BallCollisionsHandler>().AsSingle().NonLazy();
             
-            Container.Bind<GameStarterRunner>()
+            Container.Bind<GameCycle>()
                 .FromComponentInHierarchy()
                 .AsSingle();
             Container.Bind<PlayerPaddle>()

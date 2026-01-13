@@ -1,4 +1,4 @@
-namespace Scripts
+namespace Paddles
 {
     public class ComputerPaddle : BasePaddle
     {

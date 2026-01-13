@@ -187,6 +187,7 @@ GameObject:
   - component: {fileID: 9182482783995340969}
   - component: {fileID: 3902202987462183979}
   - component: {fileID: 3970281255474813038}
+  - component: {fileID: -2944156732437051734}
   m_Layer: 0
   m_Name: ControlInversionBonus
   m_TagString: Untagged
@@ -311,3 +312,16 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &-2944156732437051734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7873824096701585590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3db373387044254b2cf6c446aeb04d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bonusType: 1

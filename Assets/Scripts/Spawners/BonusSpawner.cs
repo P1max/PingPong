@@ -1,35 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
+using Bonuses;
 using UnityEngine;
 
-public class BonusSpawner : MonoBehaviour
+namespace Spawners
 {
-    [SerializeField] private List<GameObject> _bonuses = new();
-    [SerializeField] private float _timeForBonusSpawn = 20f;
-
-    [Header("RangeForBonusSpawn")] 
-    [SerializeField] private Transform _rt;
-    [SerializeField] private Transform _lb;
-
-    private int _count;
-
-    void Start()
+    public class BonusSpawner
     {
-        _count = _bonuses.Count;
-        StartCoroutine(BonusInstantiate());
-    }
+        private const float _TIME_FOR_BONUS_SPAWN = 20f;
 
-    IEnumerator BonusInstantiate()
-    {
-        while (true)
+        private readonly BonusBase[] _bonuses;
+        private readonly int _count;
+
+        private float _timer;
+        private bool _isSpawningBonuses;
+
+        public BonusSpawner()
         {
-            yield return new WaitForSeconds(_timeForBonusSpawn);
-            var rand = Random.Range(0, _count);
-            var newBonus = Instantiate(_bonuses[rand]);
-            newBonus.transform.position = new Vector2(
-                Random.Range(_lb.transform.position.x, _rt.transform.position.x),
-                Random.Range(_lb.transform.position.y, _rt.transform.position.y));
-            newBonus.SetActive(true);
+            _bonuses = Resources.LoadAll<BonusBase>("Prefabs");
+            _count = _bonuses.Length;
+            _isSpawningBonuses = false;
+        }
+
+        private void InstantiateBonus()
+        {
+            var bonusNumber = Random.Range(0, _count);
+            var bonus = Object.Instantiate(_bonuses[bonusNumber]);
+        }
+
+        public void StartSpawning()
+        {
+            _timer = 0f;
+            _isSpawningBonuses = true;
+        }
+
+        public void StopSpawning()
+        {
+            _isSpawningBonuses = false;
+        }
+
+        public void Tick(float deltaTime)
+        {
+            if (!_isSpawningBonuses) return;
+            
+            _timer += deltaTime;
+            
+            if (_timer >= _TIME_FOR_BONUS_SPAWN)
+            {
+                _timer -= _TIME_FOR_BONUS_SPAWN;
+                
+                InstantiateBonus();
+            }
         }
     }
 }

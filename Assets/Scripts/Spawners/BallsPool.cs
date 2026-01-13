@@ -1,28 +1,26 @@
 ﻿using System.Collections.Generic;
-using Paddles;
+using Ball;
 using UnityEngine;
 
-namespace Scripts
+namespace Spawners
 {
     public class BallsPool
     {
         private readonly BallCollisionsHandler _ballCollisionsHandler;
-        private readonly LinkedList<Ball> _activeBalls;
-        private readonly LinkedList<Ball> _freeBalls;
-        private readonly Ball _ballPrefab;
+        private readonly LinkedList<Ball.Ball> _activeBalls;
+        private readonly LinkedList<Ball.Ball> _freeBalls;
+        private readonly Ball.Ball _ballPrefab;
 
         public BallsPool(BallCollisionsHandler ballCollisionsHandler)
         {
             _ballCollisionsHandler = ballCollisionsHandler;
-            _ballPrefab = Resources.Load<Ball>("Prefabs/Ball");
+            _ballPrefab = Resources.Load<Ball.Ball>("Prefabs/Ball");
             
-            _activeBalls = new LinkedList<Ball>();
-            _freeBalls = new LinkedList<Ball>();
-            
-            Debug.Log("Класс создан, префаб найден");
+            _activeBalls = new LinkedList<Ball.Ball>();
+            _freeBalls = new LinkedList<Ball.Ball>();
         }
 
-        public Ball GetBall()
+        public Ball.Ball GetBall()
         {
             if (_freeBalls.Count > 0)
             {
@@ -45,7 +43,7 @@ namespace Scripts
             return newBall;
         }
 
-        public void ReturnBall(Ball ball)
+        public void ReturnBall(Ball.Ball ball)
         {
             ball.gameObject.SetActive(false);
             
@@ -53,11 +51,11 @@ namespace Scripts
             _freeBalls.AddLast(ball);
         }
 
-        private Ball CreateBall()
+        private Ball.Ball CreateBall()
         {
             var ball = Object.Instantiate(_ballPrefab);
 
-            ball.SetDependencies(_ballCollisionsHandler);
+            ball.SetDependencies(_ballCollisionsHandler, this);
             
             return ball;
         }

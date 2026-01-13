@@ -1,47 +1,55 @@
 using InputSystem;
-using UnityEngine;
 
-namespace Scripts
+namespace Paddles
 {
     public class PlayerPaddleController
     {
         private readonly IInputReader _inputReader;
         private readonly PlayerPaddle _playerPaddle;
 
-        private int _isInverted;
+        private bool _isInverted;
+
+        public int IsInverted
+        {
+            get
+            {
+                if (!_isInverted) return 1;
+                
+                return -1;
+            }
+        }
 
         public PlayerPaddleController(IInputReader inputReader, PlayerPaddle playerPaddle)
         {
             _inputReader = inputReader;
             _playerPaddle = playerPaddle;
-            _isInverted = 1;
+            _isInverted = false;
             
             _inputReader.OnUpAction += OnUp;
             _inputReader.OnDownAction += OnDown;
             _inputReader.OnReleaseAction += OnRelease;
-            
-            Debug.Log("PlayerPaddleController initialized");
         }
 
         private void OnUp()
         {
-            Debug.Log($"Paddle Controller Up");
-            
-            _playerPaddle.Move(1 * _isInverted);
+            _playerPaddle.Move(1 * IsInverted);
         }
 
         private void OnDown()
         {
-            Debug.Log($"Paddle Controller Down");
-            
-            _playerPaddle.Move(-1 * _isInverted);
+            _playerPaddle.Move(-1 * IsInverted);
         }
 
         private void OnRelease()
         {
-            Debug.Log($"Paddle Controller Release");
-            
             _playerPaddle.Move(0);
+        }
+
+        public void SetIsInverted(bool isInverted)
+        {
+            _isInverted = isInverted;
+            
+            _playerPaddle.Move(_playerPaddle.Direction * IsInverted);
         }
     }
 }

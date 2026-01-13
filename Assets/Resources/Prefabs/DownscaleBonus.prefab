@@ -187,8 +187,9 @@ GameObject:
   - component: {fileID: 1027892926140350479}
   - component: {fileID: 3827460842470998338}
   - component: {fileID: 1412226583139679516}
+  - component: {fileID: -2356418834315956507}
   m_Layer: 0
-  m_Name: SizePlusBonus
+  m_Name: DownscaleBonus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -311,3 +312,16 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &-2356418834315956507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6052818820104388842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3db373387044254b2cf6c446aeb04d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bonusType: 3

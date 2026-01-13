@@ -1,10 +1,11 @@
 #define test
-using Paddles;
+using System;
+using Spawners;
 using UnityEngine;
 
-namespace Scripts
+namespace Ball
 {
-    public class  Ball : MonoBehaviour
+    public class  Ball : MonoBehaviour, IDisposable
     {
         private const float _MAX_MOVE_SPEED = 30f;
         
@@ -12,10 +13,23 @@ namespace Scripts
         [SerializeField] private Vector2 _direction = Vector2.zero;
 
         private BallCollisionsHandler _ballCollisionsHandler;
+        private BallsPool _ballsPool;
         private Rigidbody2D _ballRigidbody;
+        private bool? _isLastPlayerPaddleTouch;
 
         public float MoveSpeed => _moveSpeed;
         public Vector2 Direction => _direction;
+        public bool? IsLastPlayerPaddleTouch => _isLastPlayerPaddleTouch;
+
+        public void SetDependencies(BallCollisionsHandler ballCollisionsHandler, BallsPool ballsPool)
+        {
+            _ballCollisionsHandler = ballCollisionsHandler;
+            _ballsPool = ballsPool;
+        }
+
+        public void SetIsLastPlayerPaddleTouch(bool? isLastPlayerPaddleTouch) => _isLastPlayerPaddleTouch = isLastPlayerPaddleTouch;
+
+        public void Dispose() => _ballsPool.ReturnBall(this);
 
         public void SetMoveSpeed(float speed)
         {
@@ -29,16 +43,10 @@ namespace Scripts
             _ballRigidbody.linearVelocity = _direction.normalized * _moveSpeed;
         }
 
-        public void SetDependencies(BallCollisionsHandler ballCollisionsHandler)
-        {
-            _ballCollisionsHandler = ballCollisionsHandler;
-        }
-
         private void OnCollisionEnter2D(Collision2D other) => _ballCollisionsHandler.HandleCollision(this, other);
 
-        private void Awake()
-        {
-            _ballRigidbody = GetComponent<Rigidbody2D>();
-        }
+        private void Awake() => _ballRigidbody = GetComponent<Rigidbody2D>();
+
+        private void OnEnable() => _isLastPlayerPaddleTouch = false;
     }
 }

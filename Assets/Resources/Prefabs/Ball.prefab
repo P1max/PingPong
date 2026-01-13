@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3614104392788674873}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RightTopCorner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 6711056839419181349}
   - component: {fileID: 3682966206968117881}
   - component: {fileID: 8471737861984921141}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Ball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,7 +209,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 760777287298263683}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LeftBotCorner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
