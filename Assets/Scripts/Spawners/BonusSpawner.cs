@@ -5,7 +5,7 @@ namespace Spawners
 {
     public class BonusSpawner
     {
-        private const float _TIME_FOR_BONUS_SPAWN = 20f;
+        private const float _TIME_FOR_BONUS_SPAWN = 5;
 
         private readonly BonusBase[] _bonuses;
         private readonly int _count;
@@ -24,19 +24,26 @@ namespace Spawners
         {
             var bonusNumber = Random.Range(0, _count);
             var bonus = Object.Instantiate(_bonuses[bonusNumber]);
+
+            bonus.transform.position = new Vector2(Random.Range(-10f, 10f), Random.Range(-6f, 6f));
+        }
+
+        public void ReturnBonus(BonusBase bonus)
+        {
+            Object.Destroy(bonus.gameObject);
         }
 
         public void StartSpawning()
         {
-            _timer = 0f;
             _isSpawningBonuses = true;
         }
 
         public void StopSpawning()
         {
             _isSpawningBonuses = false;
+            _timer = 0f;
         }
-
+        
         public void Tick(float deltaTime)
         {
             if (!_isSpawningBonuses) return;

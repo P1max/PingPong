@@ -1,10 +1,10 @@
 using Paddles;
 
-namespace Ball
+namespace BallLogic
 {
     public class CollisionContext
     {
-        public global::Ball.Ball Ball;
+        public Ball Ball;
         public PlayerPaddle PlayerPaddle;
         public ComputerPaddle ComputerPaddle;
         public PlayerPaddleController PlayerPaddleController;

@@ -1,5 +1,7 @@
-using Ball;
+using BallLogic;
+using Bonuses;
 using Boot;
+using Core;
 using InputSystem;
 using Paddles;
 using Spawners;
@@ -11,14 +13,13 @@ namespace Installers
     {
         public override void InstallBindings()
         {
-            //Container.Bind<BonusSpawner>().AsSingle().NonLazy();
-            Container.Bind<GameStarter>().AsSingle().NonLazy();
-            Container.Bind<BallsPool>().AsSingle().NonLazy();
-            Container.Bind<BonusSpawner>().AsSingle().NonLazy();
+            Container.Bind<BallsPool>().AsSingle();
+            Container.Bind<BonusSpawner>().AsSingle();
+            Container.Bind<BonusManager>().AsSingle().NonLazy();
             Container.Bind<PlayerPaddleController>().AsSingle().NonLazy();
+            Container.Bind<BallContactsHandler>().AsSingle().NonLazy();
             Container.Bind<IInputReader>().To<InputReader>().AsSingle().NonLazy();
-            Container.Bind<BallCollisionsHandler>().AsSingle().NonLazy();
-            
+
             Container.Bind<GameCycle>()
                 .FromComponentInHierarchy()
                 .AsSingle();
@@ -26,6 +27,9 @@ namespace Installers
                 .FromComponentInHierarchy()
                 .AsSingle();
             Container.Bind<ComputerPaddle>()
+                .FromComponentInHierarchy()
+                .AsSingle();
+            Container.Bind<ScoreHandler>()
                 .FromComponentInHierarchy()
                 .AsSingle();
         }

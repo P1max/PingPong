@@ -5,7 +5,8 @@ namespace Paddles
     public class BasePaddle : MonoBehaviour
     {
         protected const float _MAX_MOVE_SPEED = 10f;
-        protected const float _SIZE_MULTIPLIER = 0.5f;
+        
+        private const float _SIZE_MULTIPLIER = 0.5f;
 
         private float _defaultSizeY;
 
