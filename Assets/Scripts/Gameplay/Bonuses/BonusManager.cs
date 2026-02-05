@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using Gates;
 using Paddles;
+using UnityEngine;
+using Zenject;
 
 namespace Bonuses
 {
-    public class BonusManager
+    public class BonusManager : ITickable
     {
         private readonly PlayerPaddle _playerPaddle;
         private readonly ComputerPaddle _computerPaddle;
@@ -84,7 +86,7 @@ namespace Bonuses
             bonuses[bonusType] = _bonusesDuration[bonusType];
         }
 
-        public void Tick(float deltaTime)
+        public void Tick()
         {
             foreach (var side in _activeBonuses.Keys)
             {
@@ -95,7 +97,7 @@ namespace Bonuses
                 for (var i = keys.Count - 1; i >= 0; i--)
                 {
                     var type = keys[i];
-                    bonuses[type] -= deltaTime;
+                    bonuses[type] -= Time.deltaTime;
 
                     if (bonuses[type] <= 0f)
                     {

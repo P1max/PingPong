@@ -10,14 +10,14 @@ namespace BallLogic
 {
     public class BallContactsHandler
     {
-        private const float _BALL_MOVE_SPEED_MULTIPLIER = 1.1f;
+        private const float _BALL_MOVE_SPEED_MULTIPLIER = 1.05f;
 
         private readonly ScoreHandler _scoreHandler;
         private readonly BonusSpawner _bonusSpawner;
         private readonly BonusManager _bonusManager;
         private readonly BallsPool _ballsPool;
 
-        public event Action OnGoal;
+        public event Action OnRoundEnd;
 
         public BallContactsHandler(ScoreHandler scoreHandler, BonusSpawner bonusSpawner, BonusManager bonusManager,
             BallsPool ballsPool)
@@ -28,36 +28,6 @@ namespace BallLogic
             _ballsPool = ballsPool;
 
             _bonusManager.OnBallTwinRequested += SpawnTwin;
-        }
-
-        private void SpawnTwin(Ball original)
-        {
-            var twin = _ballsPool.GetBall();
-
-            twin.transform.position = original.transform.position;
-
-            var rnd = Random.Range(-0.2f, 0.2f);
-            var dir = new Vector2(
-                -original.Direction.x,
-                original.Direction.y + rnd
-            ).normalized;
-
-            twin.SetDirection(dir);
-            twin.SetMoveSpeed(original.MoveSpeed);
-        }
-
-        private void HandlePaddlesCollision(Ball ball, Collision2D collisionObject)
-        {
-            var paddleCenter = collisionObject.transform.position.y;
-            var contactPoint = collisionObject.GetContact(0).point.y;
-
-            var distanceBetweenPaddleCenterAndContact = contactPoint - paddleCenter;
-
-            var paddleHalfHeight = collisionObject.transform.localScale.y / 2f;
-            var newYDirection = (float)0.7 * distanceBetweenPaddleCenterAndContact / paddleHalfHeight;
-
-            ball.SetDirection(new Vector2(-ball.Direction.x, newYDirection));
-            ball.SetMoveSpeed(ball.MoveSpeed * _BALL_MOVE_SPEED_MULTIPLIER);
         }
 
         public void HandleCollision(Ball ball, Collision2D collisionObject)
@@ -91,18 +61,55 @@ namespace BallLogic
             }
             else if (colliderObject.TryGetComponent<Gates.Gates>(out var gates))
             {
-                var activeBalls = _ballsPool.GetActiveBalls();
-
-                foreach (var activeBall in activeBalls)
-                    activeBall.Blow();
-
-                _scoreHandler.UpdateScore(gates.Side);
-                OnGoal?.Invoke();
+                RoundEnd(gates);
             }
             else
             {
                 Debug.LogWarning($"Столкновение с непонятным триггером :O");
             }
+        }
+
+        private void RoundEnd(Gates.Gates gates)
+        {
+            var activeBalls = _ballsPool.GetActiveBalls();
+
+            foreach (var activeBall in activeBalls)
+                activeBall.Blow();
+            
+            _bonusSpawner.ReturnBonuses();
+                
+            _scoreHandler.UpdateScore(gates.Side);
+            OnRoundEnd?.Invoke();
+        }
+
+        private void SpawnTwin(Ball original)
+        {
+            var twin = _ballsPool.GetBall();
+
+            twin.transform.position = original.transform.position;
+
+            var rnd = Random.Range(-0.2f, 0.2f);
+            var dir = new Vector2(
+                -original.Direction.x,
+                original.Direction.y + rnd
+            ).normalized;
+
+            twin.SetDirection(dir);
+            twin.SetMoveSpeed(original.MoveSpeed);
+        }
+
+        private void HandlePaddlesCollision(Ball ball, Collision2D collisionObject)
+        {
+            var paddleCenter = collisionObject.transform.position.y;
+            var contactPoint = collisionObject.GetContact(0).point.y;
+
+            var distanceBetweenPaddleCenterAndContact = contactPoint - paddleCenter;
+
+            var paddleHalfHeight = collisionObject.transform.localScale.y / 2f;
+            var newYDirection = 0.7f * distanceBetweenPaddleCenterAndContact / paddleHalfHeight;
+
+            ball.SetDirection(new Vector2(-ball.Direction.x, newYDirection));
+            ball.SetMoveSpeed(ball.MoveSpeed * _BALL_MOVE_SPEED_MULTIPLIER);
         }
     }
 }

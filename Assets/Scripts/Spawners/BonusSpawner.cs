@@ -1,13 +1,16 @@
+using System.Collections.Generic;
 using Bonuses;
 using UnityEngine;
+using Zenject;
 
 namespace Spawners
 {
-    public class BonusSpawner
+    public class BonusSpawner : ITickable
     {
-        private const float _TIME_FOR_BONUS_SPAWN = 5;
+        private const float _TIME_FOR_BONUS_SPAWN = 12f;
 
-        private readonly BonusBase[] _bonuses;
+        private readonly List<BonusBase> _activeBonuses;
+        private readonly BonusBase[] _bonusesTypes;
         private readonly int _count;
 
         private float _timer;
@@ -15,21 +18,22 @@ namespace Spawners
 
         public BonusSpawner()
         {
-            _bonuses = Resources.LoadAll<BonusBase>("Prefabs");
-            _count = _bonuses.Length;
+            _bonusesTypes = Resources.LoadAll<BonusBase>("Prefabs");
+            _activeBonuses = new List<BonusBase>();
+            _count = _bonusesTypes.Length;
             _isSpawningBonuses = false;
         }
 
-        private void InstantiateBonus()
+        public void ReturnBonuses()
         {
-            var bonusNumber = Random.Range(0, _count);
-            var bonus = Object.Instantiate(_bonuses[bonusNumber]);
-
-            bonus.transform.position = new Vector2(Random.Range(-10f, 10f), Random.Range(-6f, 6f));
+            for (var i = _activeBonuses.Count - 1; i >= 0; i--) 
+                ReturnBonus(_activeBonuses[i]);
         }
 
         public void ReturnBonus(BonusBase bonus)
         {
+            _activeBonuses.Remove(bonus);
+            
             Object.Destroy(bonus.gameObject);
         }
 
@@ -43,12 +47,12 @@ namespace Spawners
             _isSpawningBonuses = false;
             _timer = 0f;
         }
-        
-        public void Tick(float deltaTime)
+
+        public void Tick()
         {
             if (!_isSpawningBonuses) return;
             
-            _timer += deltaTime;
+            _timer += Time.deltaTime;
             
             if (_timer >= _TIME_FOR_BONUS_SPAWN)
             {
@@ -56,6 +60,16 @@ namespace Spawners
                 
                 InstantiateBonus();
             }
+        }
+
+        private void InstantiateBonus()
+        {
+            var bonusNumber = Random.Range(0, _count);
+            var bonus = Object.Instantiate(_bonusesTypes[bonusNumber]);
+            
+            _activeBonuses.Add(bonus);
+
+            bonus.transform.position = new Vector2(Random.Range(-10f, 10f), Random.Range(-6f, 6f));
         }
     }
 }

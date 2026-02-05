@@ -1,3 +1,4 @@
+using System.Linq;
 using BallLogic;
 using Spawners;
 using UnityEngine;
@@ -56,7 +57,7 @@ namespace Paddles
         
         private Ball GetMostDangerousBall()
         {
-            var activeBalls = _ballsPool.GetActiveBalls();
+            var activeBalls = _ballsPool.GetActiveBalls().Where(ball => ball.Direction.x < 0).ToArray();
 
             if (activeBalls.Length == 0)
                 return null;

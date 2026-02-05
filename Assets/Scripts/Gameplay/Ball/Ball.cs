@@ -37,15 +37,12 @@ namespace BallLogic
         
         public void Show() => _spriteRenderer.enabled = true;
 
-        public async void Blow()
+        public void Blow()
         {
             _particles.Play();
-            
             Hide();
-            
-            await UniTask.WaitUntil(() => _particles.isStopped, cancellationToken: _particles.GetCancellationTokenOnDestroy());
-            
-            _ballsPool.ReturnBall(this);
+
+            BlowAsync().Forget();
         }
 
         public void SetMoveSpeed(float speed)
@@ -71,6 +68,17 @@ namespace BallLogic
             _rigidbody = GetComponent<Rigidbody2D>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _particles = GetComponentInChildren<ParticleSystem>();
+        }
+
+        private async UniTaskVoid BlowAsync()
+        {
+            var cancelled = await UniTask.WaitUntil(() => _particles.isStopped, 
+                    cancellationToken: this.GetCancellationTokenOnDestroy())
+                .SuppressCancellationThrow();
+
+            if (cancelled || this == null) return;
+
+            _ballsPool.ReturnBall(this);
         }
 
         private void Hide()

@@ -49,7 +49,7 @@ namespace Paddles
         {
             _isInverted = isInverted;
             
-            _playerPaddle.Move(_playerPaddle.Direction * IsInverted);
+            _playerPaddle.Move(-1 * _playerPaddle.Direction);
         }
     }
 }

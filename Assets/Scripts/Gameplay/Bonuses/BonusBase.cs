@@ -7,5 +7,15 @@ namespace Bonuses
         [SerializeField] private BonusType _bonusType;
         
         public BonusType BonusType => _bonusType;
+
+        public void PickUpAnim()
+        {
+            
+        }
+
+        public void DestroyAnim()
+        {
+            
+        }
     }
 }

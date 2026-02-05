@@ -15,7 +15,7 @@ namespace Core
         private uint _leftScore;
         private uint _rightScore;
 
-        public event Action<Side> OnGameEnd;
+        public event Action<Side> OnRoundEnd;
 
         public void UpdateScore(Side side)
         {
@@ -24,14 +24,14 @@ namespace Core
                 _leftScore++;
                 _leftScoreText.text = _leftScore.ToString();
 
-                if (_leftScore >= _SCORE_TO_WIN) OnGameEnd?.Invoke(Side.Left);
+                if (_leftScore >= _SCORE_TO_WIN) OnRoundEnd?.Invoke(Side.Left);
             }
             else if (side == Side.Left)
             {
                 _rightScore++;
                 _rightScoreText.text = _rightScore.ToString();
 
-                if (_rightScore >= _SCORE_TO_WIN) OnGameEnd?.Invoke(Side.Right);
+                if (_rightScore >= _SCORE_TO_WIN) OnRoundEnd?.Invoke(Side.Right);
             }
         }
 
