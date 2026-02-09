@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Gates;
 using Paddles;
+using Settings;
 using UnityEngine;
 using Zenject;
 
@@ -12,11 +13,10 @@ namespace Bonuses
         private readonly PlayerPaddle _playerPaddle;
         private readonly ComputerPaddle _computerPaddle;
         private readonly PlayerPaddleController _playerPaddleController;
+        private readonly GameConfig _config;
 
-        // Основные данные: Тип бонуса -> Оставшееся время
         private readonly Dictionary<Side, Dictionary<BonusType, float>> _activeBonuses = new();
-        
-        // Кэш ключей для итерации (чтобы не менять словарь во время перебора)
+
         private readonly Dictionary<Side, List<BonusType>> _activeKeys = new();
 
         private readonly Dictionary<BonusType, BonusType[]> _conflicts = new()
@@ -25,27 +25,25 @@ namespace Bonuses
             { BonusType.DownscaleBoard, new[] { BonusType.UpscaleBoard } }
         };
 
-        private readonly Dictionary<BonusType, float> _bonusesDuration = new()
-        {
-            { BonusType.BallTwin, 0f },
-            { BonusType.UpscaleBoard, 8f },
-            { BonusType.DownscaleBoard, 8f },
-            { BonusType.ControlInversion, 6f },
-        };
+        private readonly Dictionary<BonusType, float> _bonusesDuration = new();
 
         public Action<BallLogic.Ball> OnBallTwinRequested;
 
         public BonusManager(
             PlayerPaddle playerPaddle,
             ComputerPaddle computerPaddle,
-            PlayerPaddleController playerPaddleController)
+            PlayerPaddleController playerPaddleController,
+            GameConfig config)
         {
             _playerPaddle = playerPaddle;
             _computerPaddle = computerPaddle;
             _playerPaddleController = playerPaddleController;
+            _config = config;
 
             InitSide(Side.Right);
             InitSide(Side.Left);
+
+            InitBonusDurations();
         }
 
         public void ApplyBonus(BonusType bonusType, BallLogic.Ball ballThatTouchedBonus)
@@ -55,6 +53,7 @@ namespace Bonuses
             if (bonusType == BonusType.BallTwin)
             {
                 OnBallTwinRequested?.Invoke(ballThatTouchedBonus);
+
                 return;
             }
 
@@ -62,7 +61,6 @@ namespace Bonuses
             var bonuses = _activeBonuses[side];
             var keys = _activeKeys[side];
 
-            // 1) Удаляем конфликты (если были)
             if (_conflicts.TryGetValue(bonusType, out var conflicts))
             {
                 foreach (var conflict in conflicts)
@@ -75,15 +73,13 @@ namespace Bonuses
                 }
             }
 
-            // 2) Если бонуса нет — активируем эффект и запоминаем ключ
             if (!bonuses.ContainsKey(bonusType))
             {
                 ApplyEffect(side, bonusType);
                 keys.Add(bonusType);
             }
 
-            // 3) Обновляем время (для нового или существующего)
-            bonuses[bonusType] = _bonusesDuration[bonusType];
+            bonuses[bonusType] = _bonusesDuration.GetValueOrDefault(bonusType, 0f);
         }
 
         public void Tick()
@@ -93,18 +89,18 @@ namespace Bonuses
                 var bonuses = _activeBonuses[side];
                 var keys = _activeKeys[side];
 
-                // Идем по списку ключей с конца (безопасно для удаления)
                 for (var i = keys.Count - 1; i >= 0; i--)
                 {
                     var type = keys[i];
+
                     bonuses[type] -= Time.deltaTime;
 
                     if (bonuses[type] <= 0f)
                     {
                         RevertEffect(side, type);
-                        
+
                         bonuses.Remove(type);
-                        keys.RemoveAt(i); 
+                        keys.RemoveAt(i);
                     }
                 }
             }
@@ -116,6 +112,14 @@ namespace Bonuses
         {
             _activeBonuses[side] = new Dictionary<BonusType, float>();
             _activeKeys[side] = new List<BonusType>();
+        }
+
+        private void InitBonusDurations()
+        {
+            foreach (var entry in _config.BonusDurations.Durations)
+            {
+                _bonusesDuration[entry.Type] = entry.Duration;
+            }
         }
 
         private void ApplyEffect(Side side, BonusType type)

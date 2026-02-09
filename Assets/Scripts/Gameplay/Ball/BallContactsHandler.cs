@@ -2,6 +2,7 @@
 using Bonuses;
 using Core;
 using Paddles;
+using Settings;
 using Spawners;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -10,22 +11,22 @@ namespace BallLogic
 {
     public class BallContactsHandler
     {
-        private const float _BALL_MOVE_SPEED_MULTIPLIER = 1.05f;
-
         private readonly ScoreHandler _scoreHandler;
         private readonly BonusSpawner _bonusSpawner;
         private readonly BonusManager _bonusManager;
         private readonly BallsPool _ballsPool;
+        private readonly GameConfig _config;
 
         public event Action OnRoundEnd;
 
         public BallContactsHandler(ScoreHandler scoreHandler, BonusSpawner bonusSpawner, BonusManager bonusManager,
-            BallsPool ballsPool)
+            BallsPool ballsPool, GameConfig config)
         {
             _scoreHandler = scoreHandler;
             _bonusSpawner = bonusSpawner;
             _bonusManager = bonusManager;
             _ballsPool = ballsPool;
+            _config = config;
 
             _bonusManager.OnBallTwinRequested += SpawnTwin;
         }
@@ -75,9 +76,9 @@ namespace BallLogic
 
             foreach (var activeBall in activeBalls)
                 activeBall.Blow();
-            
+
             _bonusSpawner.ReturnBonuses();
-                
+
             _scoreHandler.UpdateScore(gates.Side);
             OnRoundEnd?.Invoke();
         }
@@ -109,7 +110,7 @@ namespace BallLogic
             var newYDirection = 0.7f * distanceBetweenPaddleCenterAndContact / paddleHalfHeight;
 
             ball.SetDirection(new Vector2(-ball.Direction.x, newYDirection));
-            ball.SetMoveSpeed(ball.MoveSpeed * _BALL_MOVE_SPEED_MULTIPLIER);
+            ball.SetMoveSpeed(ball.MoveSpeed * _config.Ball.SpeedMultiplier);
         }
     }
 }

@@ -46,7 +46,7 @@ public class CameraFitter : MonoBehaviour
         else
         {
             var scaleWidth = 1f / scaleHeight;
-            
+
             rect.width = scaleWidth;
             rect.height = 1f;
             rect.x = (1f - scaleWidth) * 0.5f;

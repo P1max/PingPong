@@ -1,4 +1,5 @@
 using System;
+using Core;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace UI.RestartPanel
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private TextMeshProUGUI _winText;
         [SerializeField] private TextMeshProUGUI _loseText;
+        [SerializeField] private TextMeshProUGUI _drawText;
         [SerializeField] private RectTransform _body;
         [SerializeField] private Button _replayButton;
 
@@ -47,22 +49,31 @@ namespace UI.RestartPanel
             _replayButton.onClick.AddListener(Hide);
         }
 
-        public void Show(bool isWin)
+        public void Show(GameCycle.WinType type)
         {
             Debug.Log($"Включаем");
             _sequenceClose.Pause();
 
             gameObject.SetActive(true);
-
-            if (isWin)
+            
+            switch (type)
             {
-                _winText.gameObject.SetActive(true);
-                _loseText.gameObject.SetActive(false);
-            }
-            else
-            {
-                _winText.gameObject.SetActive(false);
-                _loseText.gameObject.SetActive(true);
+                case GameCycle.WinType.Player:
+                    _winText.gameObject.SetActive(true);
+                    _loseText.gameObject.SetActive(false);
+                    _drawText.gameObject.SetActive(false);
+                    break;
+                case GameCycle.WinType.Computer:
+                    _winText.gameObject.SetActive(false);
+                    _loseText.gameObject.SetActive(true);
+                    _drawText.gameObject.SetActive(false);
+                    break;
+                case GameCycle.WinType.Draw:
+                    _winText.gameObject.SetActive(false);
+                    _loseText.gameObject.SetActive(false);
+                    _drawText.gameObject.SetActive(true);
+                    break;
+                    
             }
 
             _sequenceOpen.Restart();

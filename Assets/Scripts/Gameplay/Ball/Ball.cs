@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Settings;
 using Spawners;
 using UnityEngine;
 using Zenject;
@@ -7,8 +8,6 @@ namespace BallLogic
 {
     public class Ball : MonoBehaviour
     {
-        private const float _MAX_MOVE_SPEED = 30f;
-
         [SerializeField] private float _moveSpeed;
         [SerializeField] private Vector2 _direction = Vector2.zero;
 
@@ -17,6 +16,7 @@ namespace BallLogic
         private ParticleSystem _particles;
         private Rigidbody2D _rigidbody;
         private SpriteRenderer _spriteRenderer;
+        private GameConfig _config;
         private bool? _isLastPlayerPaddleTouch;
 
         public float MoveSpeed => _moveSpeed;
@@ -26,10 +26,11 @@ namespace BallLogic
         [Inject]
         public void Construct(
             BallContactsHandler ballContactsHandler,
-            BallsPool ballsPool)
+            BallsPool ballsPool, GameConfig config)
         {
             _ballContactsHandler = ballContactsHandler;
             _ballsPool = ballsPool;
+            _config = config;
         }
 
         public void SetIsLastPlayerPaddleTouch(bool? isLastPlayerPaddleTouch) =>
@@ -47,7 +48,7 @@ namespace BallLogic
 
         public void SetMoveSpeed(float speed)
         {
-            _moveSpeed = speed > _MAX_MOVE_SPEED ? _MAX_MOVE_SPEED : speed;
+            _moveSpeed = speed > _config.Ball.MaxSpeed ? _config.Ball.MaxSpeed : speed;
             _rigidbody.linearVelocity = _direction.normalized * _moveSpeed;
         }
 

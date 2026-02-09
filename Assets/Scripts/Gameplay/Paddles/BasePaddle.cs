@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Settings;
+using UnityEngine;
+using Zenject;
 
 namespace Paddles
 {
@@ -7,6 +9,8 @@ namespace Paddles
         protected const float _MAX_MOVE_SPEED = 10f;
         
         private const float _SIZE_MULTIPLIER = 0.5f;
+        
+        [Inject] private GameConfig _config;
 
         private float _defaultSizeY;
 

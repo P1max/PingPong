@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Bonuses;
+using Settings;
 using UnityEngine;
 using Zenject;
 
@@ -7,17 +8,18 @@ namespace Spawners
 {
     public class BonusSpawner : ITickable
     {
-        private const float _TIME_FOR_BONUS_SPAWN = 12f;
-
         private readonly List<BonusBase> _activeBonuses;
         private readonly BonusBase[] _bonusesTypes;
+        private readonly GameConfig _config;
         private readonly int _count;
 
         private float _timer;
         private bool _isSpawningBonuses;
 
-        public BonusSpawner()
+        public BonusSpawner(GameConfig config)
         {
+            _config = config;
+            
             _bonusesTypes = Resources.LoadAll<BonusBase>("Prefabs");
             _activeBonuses = new List<BonusBase>();
             _count = _bonusesTypes.Length;
@@ -54,9 +56,9 @@ namespace Spawners
             
             _timer += Time.deltaTime;
             
-            if (_timer >= _TIME_FOR_BONUS_SPAWN)
+            if (_timer >= _config.BonusSpawn.SpawnInterval)
             {
-                _timer -= _TIME_FOR_BONUS_SPAWN;
+                _timer -= _config.BonusSpawn.SpawnInterval;
                 
                 InstantiateBonus();
             }
