@@ -1,5 +1,6 @@
 ﻿using BallLogic;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 using Paddles;
 using Spawners;
 using UI.RestartPanel;
@@ -21,21 +22,21 @@ namespace Core
         [Inject] private BallsPool _ballsPool;
 
         private bool _isPlaying;
-        
+
         private void TimerEnd() => EndGame(_scoreHandler.GetScoreResult());
 
         private void OnEnable()
         {
             _gameTimer.OnTimeEnd += TimerEnd;
-            _scoreHandler.OnRoundEnd += EndGame;
-            _ballContactsHandler.OnRoundEnd += RespawnBall;
+            _scoreHandler.OnGameEnd += EndGame;
+            _ballContactsHandler.OnGoal += TakeGoal;
         }
 
         private void OnDisable()
         {
             _gameTimer.OnTimeEnd -= TimerEnd;
-            _scoreHandler.OnRoundEnd -= EndGame;
-            _ballContactsHandler.OnRoundEnd -= RespawnBall;
+            _scoreHandler.OnGameEnd -= EndGame;
+            _ballContactsHandler.OnGoal -= TakeGoal;
         }
 
         private void Start()
@@ -43,19 +44,21 @@ namespace Core
             _restartPanel.Init(() =>
             {
                 _scoreHandler.ResetScore();
-                _playerPaddle.transform.position = new Vector3(_playerPaddle.transform.position.x, 0, _playerPaddle.transform.position.z);
-                _computerPaddle.transform.position = new Vector3(_computerPaddle.transform.position.x, 0, _computerPaddle.transform.position.z);
-                
+                _playerPaddle.transform.position = new Vector3(_playerPaddle.transform.position.x, 0,
+                    _playerPaddle.transform.position.z);
+                _computerPaddle.transform.position = new Vector3(_computerPaddle.transform.position.x, 0,
+                    _computerPaddle.transform.position.z);
+
                 StartGame().Forget();
             });
-            
+
             StartGame().Forget();
         }
 
         private async UniTask StartGame()
         {
             await UniTask.Delay(500);
-            
+
             _isPlaying = true;
             _gameTimer.StartTimer();
 
@@ -67,24 +70,41 @@ namespace Core
         private void EndGame(WinType type) // Если 1 = Player Win, 0 = Draw, -1 = Computer Win
         {
             _isPlaying = false;
-            
+
+            _gameTimer.PauseTimer();
+
             _bonusSpawner.StopSpawning();
             _bonusSpawner.ReturnBonuses();
 
             _restartPanel.Show(type);
-
-            _gameTimer.PauseTimer();
         }
 
-        private async void RespawnBall()
+        private void TakeGoal(Gates.Gates gates)
         {
-            if (!_isPlaying) return;
             
+        }
+
+        private async void EndRound([CanBeNull] Gates.Gates gates, bool isStartingNew = true)
+        {
             _gameTimer.PauseTimer();
             
-            await UniTask.Delay(1000); 
-            
+            if (gates) _scoreHandler.UpdateScore(gates.Side);
+
+            ClearBalls();
+
+            _bonusSpawner.StopSpawning();
+
+            await UniTask.Delay(1000);
+
             await SpawnBall();
+        }
+
+        private void ClearBalls()
+        {
+            var activeBalls = _ballsPool.GetActiveBalls();
+
+            foreach (var activeBall in activeBalls)
+                activeBall.Blow();
         }
 
         private async UniTask SpawnBall()
@@ -96,11 +116,11 @@ namespace Core
             newBall.gameObject.transform.position = new Vector3(0, 0, 0);
 
             await UniTask.Delay(1500);
-            
+
             if (!newBall || !_isPlaying) return;
 
             _gameTimer.ContinueTimer();
-            
+
             newBall.SetDirection(new Vector2(1, Random.Range(-1f, 1f)));
             newBall.SetMoveSpeed(12f);
         }

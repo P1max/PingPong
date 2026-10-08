@@ -17,7 +17,7 @@ namespace Core
         private uint _computerScore;
         private uint _playerScore;
 
-        public event Action<GameCycle.WinType> OnRoundEnd;
+        public event Action<GameCycle.WinType> OnGameEnd;
 
         public void UpdateScore(Side goalSide)
         {
@@ -26,14 +26,14 @@ namespace Core
                 _computerScore++;
                 _computerScoreText.text = _computerScore.ToString();
 
-                if (_computerScore >= _config.Score.ScoreToWin) OnRoundEnd?.Invoke(GameCycle.WinType.Computer);
+                if (_computerScore >= _config.Score.ScoreToWin) OnGameEnd?.Invoke(GameCycle.WinType.Computer);
             }
             else if (goalSide == Side.Left)
             {
                 _playerScore++;
                 _playerScoreText.text = _playerScore.ToString();
 
-                if (_playerScore >= _config.Score.ScoreToWin) OnRoundEnd?.Invoke(GameCycle.WinType.Player);
+                if (_playerScore >= _config.Score.ScoreToWin) OnGameEnd?.Invoke(GameCycle.WinType.Player);
             }
         }
 

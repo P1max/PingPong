@@ -17,7 +17,7 @@ namespace BallLogic
         private readonly BallsPool _ballsPool;
         private readonly GameConfig _config;
 
-        public event Action OnRoundEnd;
+        public event Action<Gates.Gates> OnGoal;
 
         public BallContactsHandler(ScoreHandler scoreHandler, BonusSpawner bonusSpawner, BonusManager bonusManager,
             BallsPool ballsPool, GameConfig config)
@@ -62,7 +62,7 @@ namespace BallLogic
             }
             else if (colliderObject.TryGetComponent<Gates.Gates>(out var gates))
             {
-                RoundEnd(gates);
+                TakeGoal(gates);
             }
             else
             {
@@ -70,17 +70,9 @@ namespace BallLogic
             }
         }
 
-        private void RoundEnd(Gates.Gates gates)
+        private void TakeGoal(Gates.Gates gates)
         {
-            var activeBalls = _ballsPool.GetActiveBalls();
-
-            foreach (var activeBall in activeBalls)
-                activeBall.Blow();
-
-            _bonusSpawner.ReturnBonuses();
-
-            _scoreHandler.UpdateScore(gates.Side);
-            OnRoundEnd?.Invoke();
+            OnGoal?.Invoke(gates);
         }
 
         private void SpawnTwin(Ball original)
